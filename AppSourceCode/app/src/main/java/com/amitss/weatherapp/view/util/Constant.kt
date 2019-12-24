@@ -38,3 +38,7 @@ const val HTTP_READ_TIMEOUT: Long = 120
  * Retrofit write TIMEOUT
  */
 const val HTTP_WRITE_TIMEOUT: Long = 90
+/**
+ * Min Query length
+ */
+const val QUERY_SIZE = 2

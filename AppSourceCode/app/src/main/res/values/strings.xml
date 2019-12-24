@@ -22,4 +22,12 @@
     <string name="str_api_city_list">Get API city list</string>
     <string name="str_prev_search_error_title">You don\'t have previous search</string>
     <string name="str_prev_search_error_message">Please search the place to see the weather</string>
+
+    <string name="str_reason_not_found">No Reason found</string>
+    <string name="str_country_not_found">Please try with different name</string>
+    <string name="str_city_na">City Not Found</string>
+
+    <string name="str_no_internet">No Internet</string>
+    <string name="str_no_internet_message">Network not available. Please try again later</string>
+    <string name="str_ok">OK</string>
 </resources>

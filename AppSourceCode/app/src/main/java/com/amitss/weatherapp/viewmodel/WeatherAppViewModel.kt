@@ -6,9 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.amitss.weatherapp.database.AppDatabase
 import com.amitss.weatherapp.database.entity.CityEntity
+import com.amitss.weatherapp.service.exception.InternetNotAvailableException
 import com.amitss.weatherapp.service.model.CitySearchModel
 import com.amitss.weatherapp.service.model.Response
 import com.amitss.weatherapp.service.repository.RetrofitAPIRepository
+import com.amitss.weatherapp.view.util.isInternetAvailable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -72,25 +74,31 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
      */
     fun fetAPICityList(str: String?): LiveData<Any> {
         fetchAPILiveData = MutableLiveData()
-        scope.launch {
-            val cityList: retrofit2.Response<CitySearchModel> =
-                RetrofitAPIRepository.makeRetrofitService().getWorldWeatherCity("$str%")
-            val cityResponse: Response<Any>? = Response()
-            if (cityList.isSuccessful) {
-                Timber.d(cityList.body().toString())
-                val searchAPIModel = cityList.body() as CitySearchModel
-                if (searchAPIModel.search_api != null) {
-                    cityResponse?.value = searchAPIModel
+
+        val cityResponse: Response<Any>? = Response()
+        if (isInternetAvailable(application = getApplication())) {
+            scope.launch {
+                val cityList: retrofit2.Response<CitySearchModel> =
+                    RetrofitAPIRepository.makeRetrofitService().getWorldWeatherCity("$str%")
+
+                if (cityList.isSuccessful) {
+                    Timber.d(cityList.body().toString())
+                    val searchAPIModel = cityList.body() as CitySearchModel
+                    if (searchAPIModel.search_api != null) {
+                        cityResponse?.value = searchAPIModel
+                    } else {
+                        cityResponse?.value = Exception(cityList.body().toString())
+                    }
                 } else {
-                    cityResponse?.value = Exception(cityList.body().toString())
+                    Timber.e(cityList.errorBody().toString())
+                    cityResponse?.value = Exception(cityList.errorBody().toString())
                 }
-            } else {
-                Timber.e(cityList.errorBody().toString())
-                cityResponse?.value = Exception(cityList.errorBody().toString())
+                fetchAPILiveData.postValue(cityResponse)
             }
+        } else {
+            cityResponse?.value = InternetNotAvailableException("")
             fetchAPILiveData.postValue(cityResponse)
         }
-
         return fetchAPILiveData
     }
 
