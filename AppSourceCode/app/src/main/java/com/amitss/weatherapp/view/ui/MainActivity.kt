@@ -38,7 +38,7 @@ class MainActivity : BaseActivity() {
         Timber.d(getString(R.string.str_on_create))
         setSupportActionBar(toolbar)
 
-        // Empty model when Search Data not availabale
+        // Empty model when Search Data not available
         citySearchModel = initModel()
         cityAdapter = CitySearchAdapter(context, citySearchModel)
 
@@ -52,7 +52,7 @@ class MainActivity : BaseActivity() {
         Timber.d(getString(R.string.str_on_create_options_menu))
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_main, menu)
-        val menuItem: MenuItem? = menu?.findItem(R.id.app_bar_search)
+        val menuItem: MenuItem? = menu.findItem(R.id.app_bar_search)
 
         // Menu Search View and auto complete
         val searchView = menuItem?.actionView as SearchView
@@ -114,19 +114,19 @@ class MainActivity : BaseActivity() {
         Timber.d(getString(R.string.str_api_city_list))
         weatherAppViewModel.fetAPICityList(city).observe(context as MainActivity, Observer {
 
-            if (it == null || (it as Response<*>).value == null) {
+            citySearchModel = if (it == null || (it as Response<*>).value == null) {
                 Timber.d("null")
-                citySearchModel = initModel()
-            } else if ((it as Response<*>).value is InternetNotAvailableException) {
-                Timber.d((it as Response<*>).value.toString())
+                initModel()
+            } else if (it.value is InternetNotAvailableException) {
+                Timber.d(it.value.toString())
                 handleNoInternet()
                 return@Observer
-            } else if ((it as Response<*>).value is Exception) {
-                Timber.d((it as Response<*>).value.toString())
-                citySearchModel = initModel()
+            } else if (it.value is Exception) {
+                Timber.d(it.value.toString())
+                initModel()
             } else {
-                Timber.d((it as Response<*>).value.toString())
-                citySearchModel = (it as Response<*>).value as CitySearchModel
+                Timber.d(it.value.toString())
+                it.value as CitySearchModel
             }
             cityAdapter.setSearchModel(citySearchModel)
             cityAdapter.notifyDataSetChanged()
