@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WeatherApp</string>
+    <string name="str_app_name">WeatherApp</string>
     <string name="action_settings">Settings</string>
 
     <string name="str_on_create">onCreate</string>
