@@ -22,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
     /**
      * City dao to refer the City Table Queries.
      */
-    abstract fun cityDao(): CityDao
+    abstract fun cityDao(): CityDao?
 
     /**
      * Singleton instance of AppDatabase

@@ -32,8 +32,13 @@ dependencies {
     implementation loggingDependencies.timber
     implementation dbDependencies.room
     kapt dbDependencies.roomKapt
+    implementation coroutineDependencies.kotlinCoroutine
+    implementation coroutineDependencies.kotlinCoroutineCore
+    implementation supportDependencies.lifecycle
+    implementation supportDependencies.lifecycleExt
 
     testImplementation testingDependencies.junit
     androidTestImplementation testingDependencies.androidxJunit
     androidTestImplementation testingDependencies.androidxEspresso
+
 }

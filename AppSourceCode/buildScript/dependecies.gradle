@@ -11,6 +11,8 @@ ext {
     androidxJunitVer = '1.1.1'
     androidxEspressoVer = '3.2.0'
     roomVer = '2.2.3'
+    kotlinCoroutineVer = "1.0.1"
+    lifecycleVer = '2.1.0'
 
     // core dependency
     coreDependencies = [
@@ -35,7 +37,9 @@ ext {
     //Support Libraries dependencies
     supportDependencies = [
             appCompat       : "androidx.appcompat:appcompat:${supportLibraryVer}",
-            constraintlayout: "androidx.constraintlayout:constraintlayout:${constraingLayoutVer}"
+            constraintlayout: "androidx.constraintlayout:constraintlayout:${constraingLayoutVer}",
+            lifecycle       : "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVer}",
+            lifecycleExt    : "androidx.lifecycle:lifecycle-extensions:${lifecycleVer}"
     ]
 
     //Logging support Dependencies
@@ -54,6 +58,12 @@ ext {
     dbDependencies = [
             room    : "androidx.room:room-runtime:${roomVer}",
             roomKapt: "androidx.room:room-compiler:${roomVer}"
+    ]
+
+    //Database Dependencies
+    coroutineDependencies = [
+            kotlinCoroutine    : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinCoroutineVer}",
+            kotlinCoroutineCore: "org.jetbrains.kotlinx:kotlinx-coroutines-core:{$kotlinCoroutineVer}"
     ]
 
 }
