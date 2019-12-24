@@ -9,4 +9,12 @@
     <string name="str_on_pause">onPause</string>
     <string name="str_on_stop">onStop</string>
     <string name="str_on_destroy">onDestroy</string>
+
+    <string name="str_on_create_options_menu">onCreateOptionsMenu</string>
+    <string name="str_on_query_text_submit">onQueryTextSubmit</string>
+    <string name="str_on_query_text_change">onQueryTextChange</string>
+    <string name="str_on_item_click_listener">OnItemClickListener</string>
+    <string name="str_loading">Loading…</string>
+
+    <string name="str_search">Search</string>
 </resources>
