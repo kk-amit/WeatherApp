@@ -15,6 +15,7 @@
     <string name="str_on_query_text_change">onQueryTextChange</string>
     <string name="str_on_item_click_listener">OnItemClickListener</string>
     <string name="str_loading">Loading…</string>
+    <string name="str_app_db_instance">Get App DB Instance</string>
 
     <string name="str_search">Search</string>
 </resources>

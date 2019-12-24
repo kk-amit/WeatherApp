@@ -10,6 +10,7 @@ ext {
     junitVer = '4.12'
     androidxJunitVer = '1.1.1'
     androidxEspressoVer = '3.2.0'
+    roomVer = '2.2.3'
 
     // core dependency
     coreDependencies = [
@@ -47,6 +48,12 @@ ext {
             junit           : "junit:junit:${junitVer}",
             androidxJunit   : "androidx.test.ext:junit:${androidxJunitVer}",
             androidxEspresso: "androidx.test.espresso:espresso-core:${androidxEspressoVer}"
+    ]
+
+    //Database Dependencies
+    dbDependencies = [
+            room    : "androidx.room:room-runtime:${roomVer}",
+            roomKapt: "androidx.room:room-compiler:${roomVer}"
     ]
 
 }
