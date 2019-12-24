@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.amitss.weatherapp.R
-import com.amitss.weatherapp.service.CityResponse
+import com.amitss.weatherapp.service.model.Response
 import com.amitss.weatherapp.viewmodel.WeatherAppViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -58,13 +58,26 @@ class MainActivity : BaseActivity() {
         Timber.d(getString(R.string.str_saved_city_list))
 
         weatherAppViewModel.fetchDBCityList().observe(context as MainActivity, Observer {
-            if (it == null || (it as CityResponse<*>).value is Exception) {
+            if (it == null || (it as Response<*>).value is Exception) {
                 Timber.d(getString(R.string.str_prev_search_error_title))
                 updateSearchListNotFoundError()
             } else {
-                Timber.d((it as CityResponse<*>).value.toString())
+                Timber.d((it as Response<*>).value.toString())
                 updateSearchListView(false)
             }
+        })
+
+    }
+
+    /**
+     * Perform city search API call
+     *
+     * @param city - City List
+     */
+    private fun getAPICityList(city: String) {
+        Timber.d(getString(R.string.str_api_city_list))
+        weatherAppViewModel.fetAPICityList(city).observe(context as MainActivity, Observer {
+
         })
 
     }

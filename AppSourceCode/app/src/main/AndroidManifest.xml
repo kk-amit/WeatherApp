@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amitss.weatherapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".WeatherApplication"
         android:allowBackup="true"
@@ -26,8 +28,7 @@
         <activity
             android:name=".view.ui.MainActivity"
             android:label="@string/str_app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

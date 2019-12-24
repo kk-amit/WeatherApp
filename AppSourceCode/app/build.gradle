@@ -42,6 +42,11 @@ dependencies {
     implementation coroutineDependencies.kotlinCoroutineCore
     implementation supportDependencies.lifecycle
     implementation supportDependencies.lifecycleExt
+    implementation networkDependencies.retrofit2
+    implementation networkDependencies.retrofit2Moshi
+    implementation networkDependencies.retrofit2Coroutine
+    implementation networkDependencies.okhttp3
+    implementation networkDependencies.okhttp3Logging
 
     testImplementation testingDependencies.junit
     androidTestImplementation testingDependencies.androidxJunit
