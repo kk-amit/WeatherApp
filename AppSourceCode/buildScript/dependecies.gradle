@@ -1,0 +1,52 @@
+ext {
+    //Version
+    supportLibraryVer = '1.1.0'
+    buildGradleVer = '3.5.3'
+    kotlinVer = '1.3.61'
+    constraingLayoutVer = '1.1.3'
+    androidCoreVer = '1.1.0'
+    materialDesignVer = '1.0.0'
+    timberVer = '4.7.1'
+    junitVer = '4.12'
+    androidxJunitVer = '1.1.1'
+    androidxEspressoVer = '3.2.0'
+
+    // core dependency
+    coreDependencies = [
+            androidCore: "androidx.core:core-ktx:${androidCoreVer}"
+
+    ]
+
+    // UI dependency
+    uiDesignDependencies = [
+            materialDesign: "com.google.android.material:material:${materialDesignVer}"
+
+    ]
+
+    // Kotlin plugin Dependencies
+    pluginDependencies = [
+            buildGradle       : "com.android.tools.build:gradle:${buildGradleVer}",
+            kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVer}",
+            kotlinStdlib      : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVer}"
+
+    ]
+
+    //Support Libraries dependencies
+    supportDependencies = [
+            appCompat       : "androidx.appcompat:appcompat:${supportLibraryVer}",
+            constraintlayout: "androidx.constraintlayout:constraintlayout:${constraingLayoutVer}"
+    ]
+
+    //Logging support Dependencies
+    loggingDependencies = [
+            timber: "com.jakewharton.timber:timber:${timberVer}"
+    ]
+
+    //Testing Dependencies
+    testingDependencies = [
+            junit           : "junit:junit:${junitVer}",
+            androidxJunit   : "androidx.test.ext:junit:${androidxJunitVer}",
+            androidxEspresso: "androidx.test.espresso:espresso-core:${androidxEspressoVer}"
+    ]
+
+}
