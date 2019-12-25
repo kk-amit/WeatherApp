@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.row_list_item.view.*
 class CityListAdapter(private var context: Context, private var cityList: ArrayList<CityEntity>) :
     RecyclerView.Adapter<CityListAdapter.CityListViewHolder>() {
 
+    // CityListAdapter properties
     private var cityListModel = ArrayList<CityEntity>(cityList)
     private var itemClickListener: IItemClickListener<CityEntity>? = null
 
@@ -27,6 +28,10 @@ class CityListAdapter(private var context: Context, private var cityList: ArrayL
 
     fun setListener(itemClickListener: IItemClickListener<CityEntity>) {
         this.itemClickListener = itemClickListener
+    }
+
+    fun removeListener() {
+        this.itemClickListener = null
     }
 
     class CityListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

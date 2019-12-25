@@ -35,11 +35,12 @@ import timber.log.Timber
  */
 class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
 
+    // MainActivity properties.
     private lateinit var weatherAppViewModel: WeatherAppViewModel
-    private val context: Context = this
     private lateinit var cityAdapter: CitySearchAdapter
     private lateinit var citySearchModel: CitySearchModel
-    private lateinit var cityListAdapter: CityListAdapter
+    private val context: Context = this
+    private var cityListAdapter: CityListAdapter? = null
     private var cityList = ArrayList<CityEntity>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +61,7 @@ class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
 
 
         cityListAdapter = CityListAdapter(context, cityList)
-        cityListAdapter.setListener(this)
+        cityListAdapter?.setListener(this)
         viewCity.adapter = cityListAdapter
 
     }
@@ -82,6 +83,15 @@ class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
         super.onResume()
         Timber.d(getString(R.string.str_on_resume))
         getSavedCityList()
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d(getString(R.string.str_on_destroy))
+        if (cityListAdapter != null) {
+            cityListAdapter?.removeListener()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -144,8 +154,8 @@ class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
                     updateSearchListView(false)
                     cityList.clear()
                     cityList.addAll(it.value as ArrayList<CityEntity>)
-                    cityListAdapter.setCityValue(cityList)
-                    cityListAdapter.notifyDataSetChanged()
+                    cityListAdapter?.setCityValue(cityList)
+                    cityListAdapter?.notifyDataSetChanged()
                 }
             })
 

@@ -18,8 +18,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_weather_detail.*
 import timber.log.Timber
 
+/**
+ * Weather Detail activity - represent the weather detail screen
+ */
 class WeatherDetailActivity : BaseActivity() {
 
+    //WeatherDetailActivity properties
     private lateinit var weatherAppViewModel: WeatherAppViewModel
     private val context: Context = this
     private var latitude: Double? = null

@@ -8,7 +8,7 @@ interface IItemClickListener<T> {
     /**
      * Call when item selected.
      *
-     * @param T Selected It
+     * @param T Selected Item
      */
     fun onItemClick(item: T)
 

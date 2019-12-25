@@ -17,7 +17,8 @@ import com.amitss.weatherapp.service.model.CitySearchModel
  */
 class CitySearchAdapter(context: Context, searchAPI: CitySearchModel) : BaseAdapter(), Filterable {
 
-    var searchAPIModel: CitySearchModel = searchAPI
+    // CitySearchAdapter properties
+    private var searchAPIModel: CitySearchModel = searchAPI
     private val mInflator: LayoutInflater = LayoutInflater.from(context)
 
     override fun getFilter(): Filter {

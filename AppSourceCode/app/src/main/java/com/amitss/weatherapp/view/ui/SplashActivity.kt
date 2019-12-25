@@ -9,8 +9,12 @@ import timber.log.Timber
 
 class SplashActivity : BaseActivity() {
 
+    // SplashActivity properties.
     private var mDelayHandler: Handler? = null
 
+    /**
+     * Runnable instance called after 3 seconds.
+     */
     private val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
             val intent = Intent(applicationContext, MainActivity::class.java)
