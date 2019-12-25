@@ -32,4 +32,11 @@
     <string name="str_no_internet">No Internet</string>
     <string name="str_no_internet_message">Network not available. Please try again later</string>
     <string name="str_ok">OK</string>
+    <string name="str_weather_detail_error">City Weather Detail not available, Please Try again later</string>
+    <string name="str_observation_time">Observation Time</string>
+    <string name="str_humidity">Humidity</string>
+    <string name="str_visibility">Visibility</string>
+    <string name="str_c_ic">°</string>
+    <string name="str_c">C</string>
+    <string name="str_km">KM</string>
 </resources>

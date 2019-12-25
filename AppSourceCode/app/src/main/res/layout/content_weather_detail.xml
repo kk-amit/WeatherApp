@@ -132,6 +132,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dim_10"
         android:gravity="center"
+        android:text="@string/str_weather_detail_error"
         android:textSize="@dimen/dim_tx_20"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

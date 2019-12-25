@@ -47,6 +47,8 @@ dependencies {
     implementation networkDependencies.retrofit2Coroutine
     implementation networkDependencies.okhttp3
     implementation networkDependencies.okhttp3Logging
+    implementation networkDependencies.glide
+    kapt networkDependencies.glideKapt
 
     testImplementation testingDependencies.junit
     androidTestImplementation testingDependencies.androidxJunit

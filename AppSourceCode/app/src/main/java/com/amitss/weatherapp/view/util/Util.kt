@@ -4,11 +4,17 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.widget.ImageView
 import com.amitss.weatherapp.R
 import com.amitss.weatherapp.WeatherApplication
 import com.amitss.weatherapp.database.entity.CityEntity
 import com.amitss.weatherapp.service.model.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
+/**
+ * Initialise the empty City Model
+ */
 fun initModel(): CitySearchModel {
     val weatherUrl = WeatherUrl("")
     val region = Region(WeatherApplication.mInstance.getString(R.string.str_reason_not_found))
@@ -72,4 +78,15 @@ fun isInternetAvailable(application: WeatherApplication): Boolean {
         }
     }
     return result
+}
+
+/**
+ * Load the image from URL into Imageview
+ *
+ * @param imageView - view reference
+ * @param imageUrl - URL to load image
+ */
+fun loadImage(imageView: ImageView, imageUrl: String?) {
+    Glide.with(imageView.context).setDefaultRequestOptions(RequestOptions())
+        .load(imageUrl).placeholder(R.drawable.ic_cloud).into(imageView)
 }

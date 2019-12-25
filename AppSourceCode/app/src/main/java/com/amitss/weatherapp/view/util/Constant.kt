@@ -48,3 +48,18 @@ const val QUERY_SIZE = 2
 const val LATITUDE: String = "LATITUDE"
 const val LONGITUDE: String = "LONGITUDE"
 const val CITY: String = "CITY"
+/**
+ * Default value for City
+ */
+const val DEF_CITY_LAT = 28.667
+const val DEF_CITY_LONG = 77.217
+const val DEF_CITY = "Delhi"
+
+/**
+ * Weather Detail API Query date param
+ */
+const val TODAY = "today"
+/**
+ * Weather Detail API Query current condition param
+ */
+const val CURRENT_CONDITION = "yes"

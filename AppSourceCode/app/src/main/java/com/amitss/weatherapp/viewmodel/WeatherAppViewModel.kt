@@ -9,16 +9,14 @@ import com.amitss.weatherapp.database.AppDatabase
 import com.amitss.weatherapp.database.entity.CityEntity
 import com.amitss.weatherapp.service.exception.InternetNotAvailableException
 import com.amitss.weatherapp.service.model.CitySearchModel
+import com.amitss.weatherapp.service.model.CityWeatherDetailModel
 import com.amitss.weatherapp.service.model.Response
 import com.amitss.weatherapp.service.model.Result
 import com.amitss.weatherapp.service.repository.RetrofitAPIRepository
 import com.amitss.weatherapp.view.util.getCityEntity
 import com.amitss.weatherapp.view.util.initModel
 import com.amitss.weatherapp.view.util.isInternetAvailable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
@@ -43,9 +41,14 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
     private lateinit var saveDBLiveData: MutableLiveData<Any>
 
     /**
-     * Live data reference for API calls.
+     * Live data reference for fetch City API calls.
      */
-    private lateinit var fetchAPILiveData: MutableLiveData<Any>
+    private lateinit var fetchCityAPILiveData: MutableLiveData<Any>
+
+    /**
+     * Live data reference for fetch weather Details API calls.
+     */
+    private lateinit var fetchWeatherDetailAPILiveData: MutableLiveData<Any>
 
     /**
      * Fetch the city list from city_table
@@ -84,7 +87,7 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
      * @return LiveData is a data holder class that can be observed within a given lifecycle.
      */
     fun fetAPICityList(str: String?): LiveData<Any> {
-        fetchAPILiveData = MutableLiveData()
+        fetchCityAPILiveData = MutableLiveData()
 
         val cityResponse: Response<Any>? = Response()
         if (isInternetAvailable(application = getApplication())) {
@@ -104,13 +107,13 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
                     Timber.e(cityList.errorBody().toString())
                     cityResponse?.value = Exception(cityList.errorBody().toString())
                 }
-                fetchAPILiveData.postValue(cityResponse)
+                fetchCityAPILiveData.postValue(cityResponse)
             }
         } else {
             cityResponse?.value = InternetNotAvailableException("")
-            fetchAPILiveData.postValue(cityResponse)
+            fetchCityAPILiveData.postValue(cityResponse)
         }
-        return fetchAPILiveData
+        return fetchCityAPILiveData
     }
 
     /**
@@ -147,5 +150,45 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
         }
         return saveDBLiveData
     }
+
+    /**
+     * Fetching the Weather Details API data
+     *
+     * @return LiveData is a data holder class that can be observed within a given lifecycle.
+     */
+    fun getCityWeatherDetail(str: String?): LiveData<Any> {
+        fetchWeatherDetailAPILiveData = MutableLiveData()
+        val apiResponse: Response<Any>? = Response()
+
+        // perform the loading
+        apiResponse?.value = true
+        fetchWeatherDetailAPILiveData.postValue(apiResponse)
+
+        scope.launch {
+
+            val weatherDetail: retrofit2.Response<CityWeatherDetailModel> =
+                RetrofitAPIRepository.makeRetrofitService().getCityWeatherDetails("$str")
+
+            if (weatherDetail.isSuccessful) {
+                Timber.d(weatherDetail.body().toString())
+                val cityModel = weatherDetail.body() as CityWeatherDetailModel
+                if (cityModel.data != null) {
+                    apiResponse?.value = cityModel
+                } else {
+                    apiResponse?.value = Exception(weatherDetail.body().toString())
+                }
+            } else {
+                Timber.e(weatherDetail.errorBody().toString())
+                apiResponse?.value = Exception(weatherDetail.errorBody().toString())
+            }
+            fetchWeatherDetailAPILiveData.postValue(apiResponse)
+        }
+        return fetchWeatherDetailAPILiveData
+    }
+
+    /**
+     * Cancel the  coroutine request.
+     */
+    fun cancelAllRequests() = coroutineContext.cancel()
 
 }

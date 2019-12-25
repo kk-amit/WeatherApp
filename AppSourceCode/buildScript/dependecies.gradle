@@ -17,7 +17,8 @@ ext {
     retrofit2CoroutinesVer = '0.9.2'
     okhttp3Ver = '3.12.0'
     okhttp3LoggingVer = '4.2.2'
-
+    glideVer = '4.10.0'
+    glideKaptVer = '4.9.0'
     // core dependency
     coreDependencies = [
             androidCore: "androidx.core:core-ktx:${androidCoreVer}"
@@ -77,6 +78,8 @@ ext {
             retrofit2Coroutine: "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${retrofit2CoroutinesVer}",
             okhttp3           : "com.squareup.okhttp3:okhttp:${okhttp3Ver}",
             okhttp3Logging    : "com.squareup.okhttp3:logging-interceptor:$okhttp3LoggingVer",
+            glide             : "com.github.bumptech.glide:glide:${glideVer}",
+            glideKapt         : "com.github.bumptech.glide:compiler:${glideKaptVer}"
     ]
 
 }
