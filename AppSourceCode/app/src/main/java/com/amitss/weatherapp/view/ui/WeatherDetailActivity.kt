@@ -8,8 +8,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.amitss.weatherapp.R
+import com.amitss.weatherapp.service.exception.InternetNotAvailableException
 import com.amitss.weatherapp.service.model.CityWeatherDetailModel
 import com.amitss.weatherapp.service.model.Response
+import com.amitss.weatherapp.service.repository.RetrofitAPIRepository
 import com.amitss.weatherapp.view.util.*
 import com.amitss.weatherapp.viewmodel.WeatherAppViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,25 +48,35 @@ class WeatherDetailActivity : BaseActivity() {
     }
 
     /**
-     *
+     * Perform the City API call and update the UI data.
      */
     private fun fetchCityWeatherDetail() {
         val latLongQuery = "$latitude,$longitude"
-        weatherAppViewModel.getCityWeatherDetail(latLongQuery)
-            .observe(this as FragmentActivity, Observer {
-                if (it == null || (it as Response<*>).value == null || (it).value is Exception) {
-                    progressBar.visibility = View.GONE
-                    tvError.visibility = View.VISIBLE
-                } else if (it.value is Boolean) {
-                    progressBar.visibility = View.VISIBLE
-                    tvError.visibility = View.GONE
-                } else {
-                    progressBar.visibility = View.GONE
-                    tvError.visibility = View.GONE
-                    updateWeatherDetailUI(it.value as CityWeatherDetailModel)
-                }
+        weatherAppViewModel.getCityWeatherDetail(
+            RetrofitAPIRepository.makeRetrofitService(),
+            latLongQuery
+        ).observe(this as FragmentActivity, Observer {
+            if (it == null || (it as Response<*>).value == null) {
+                progressBar.visibility = View.GONE
+                tvError.visibility = View.VISIBLE
+            } else if (it.value is InternetNotAvailableException) {
+                progressBar.visibility = View.GONE
+                tvError.visibility = View.GONE
+                group.visibility = View.GONE
+                handleNoInternet(context)
+            } else if (it is Exception) {
+                progressBar.visibility = View.GONE
+                tvError.visibility = View.VISIBLE
+            } else if (it.value is Boolean) {
+                progressBar.visibility = View.VISIBLE
+                tvError.visibility = View.GONE
+            } else {
+                progressBar.visibility = View.GONE
+                tvError.visibility = View.GONE
+                updateWeatherDetailUI(it.value as CityWeatherDetailModel)
+            }
 
-            })
+        })
     }
 
     /**

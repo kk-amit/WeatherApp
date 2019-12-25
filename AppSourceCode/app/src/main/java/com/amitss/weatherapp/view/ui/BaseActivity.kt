@@ -49,6 +49,19 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     /**
+     * Handling the No internet.
+     */
+    protected fun handleNoInternet(context: Context) {
+        showAlertDialog(
+            context,
+            getString(R.string.str_no_internet),
+            getString(R.string.str_no_internet_message),
+            getString(R.string.str_ok),
+            R.drawable.ic_error
+        )
+    }
+
+    /**
      * Showing alter dialog
      * @param context - Activity Context
      * @param title - Alter Dialog Title

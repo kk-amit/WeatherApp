@@ -12,7 +12,7 @@ import com.amitss.weatherapp.service.model.CitySearchModel
 import com.amitss.weatherapp.service.model.CityWeatherDetailModel
 import com.amitss.weatherapp.service.model.Response
 import com.amitss.weatherapp.service.model.Result
-import com.amitss.weatherapp.service.repository.RetrofitAPIRepository
+import com.amitss.weatherapp.service.repository.WorldWeatherService
 import com.amitss.weatherapp.view.util.getCityEntity
 import com.amitss.weatherapp.view.util.initModel
 import com.amitss.weatherapp.view.util.isInternetAvailable
@@ -55,27 +55,29 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
      *
      * @return LiveData is a data holder class that can be observed within a given lifecycle.
      */
-    fun fetchDBCityList(): LiveData<Any> {
+    fun fetchDBCityList(appDataBase: AppDatabase?): LiveData<Any> {
         fetchDBLiveData = MutableLiveData()
-        scope.launch {
-
-            val appDataBase: AppDatabase = AppDatabase.getInstance(getApplication())
-            val cityData: List<CityEntity>? = appDataBase.cityDao()?.getAll()
-            val cityResponse: Response<Any>? = Response()
-
-            when {
-                cityData == null -> {
-                    cityResponse?.value = Exception()
-                }
-                cityData.isEmpty() -> {
-                    cityResponse?.value = Exception()
-                }
-                else -> {
-                    cityResponse?.value = cityData
-
-                }
-            }
+        val cityResponse: Response<Any>? = Response()
+        if (appDataBase == null) {
+            cityResponse?.value = Exception()
             fetchDBLiveData.postValue(cityResponse)
+        } else {
+            scope.launch {
+                val cityData: List<CityEntity>? = appDataBase.cityDao()?.getAll()
+                when {
+                    cityData == null -> {
+                        cityResponse?.value = Exception()
+                    }
+                    cityData.isEmpty() -> {
+                        cityResponse?.value = Exception()
+                    }
+                    else -> {
+                        cityResponse?.value = cityData
+
+                    }
+                }
+                fetchDBLiveData.postValue(cityResponse)
+            }
         }
         return fetchDBLiveData
     }
@@ -86,32 +88,39 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
      *
      * @return LiveData is a data holder class that can be observed within a given lifecycle.
      */
-    fun fetAPICityList(str: String?): LiveData<Any> {
+    fun fetAPICityList(worldWeatherService: WorldWeatherService?, str: String?): LiveData<Any> {
         fetchCityAPILiveData = MutableLiveData()
 
         val cityResponse: Response<Any>? = Response()
-        if (isInternetAvailable(application = getApplication())) {
-            scope.launch {
-                val cityList: retrofit2.Response<CitySearchModel> =
-                    RetrofitAPIRepository.makeRetrofitService().getWorldWeatherCity("$str%")
-
-                if (cityList.isSuccessful) {
-                    Timber.d(cityList.body().toString())
-                    val searchAPIModel = cityList.body() as CitySearchModel
-                    if (searchAPIModel.search_api != null) {
-                        cityResponse?.value = searchAPIModel
-                    } else {
-                        cityResponse?.value = Exception(cityList.body().toString())
-                    }
-                } else {
-                    Timber.e(cityList.errorBody().toString())
-                    cityResponse?.value = Exception(cityList.errorBody().toString())
-                }
+        when {
+            worldWeatherService == null -> {
+                cityResponse?.value = Exception()
                 fetchCityAPILiveData.postValue(cityResponse)
             }
-        } else {
-            cityResponse?.value = InternetNotAvailableException("")
-            fetchCityAPILiveData.postValue(cityResponse)
+            isInternetAvailable(application = getApplication()) -> {
+                scope.launch {
+                    val cityList: retrofit2.Response<CitySearchModel>? =
+                        worldWeatherService.getWorldWeatherCity("$str%")
+
+                    if (cityList?.isSuccessful!!) {
+                        Timber.d(cityList.body().toString())
+                        val searchAPIModel = cityList.body() as CitySearchModel
+                        if (searchAPIModel.search_api != null) {
+                            cityResponse?.value = searchAPIModel
+                        } else {
+                            cityResponse?.value = Exception(cityList.body().toString())
+                        }
+                    } else {
+                        Timber.e(cityList.errorBody().toString())
+                        cityResponse?.value = Exception(cityList.errorBody().toString())
+                    }
+                    fetchCityAPILiveData.postValue(cityResponse)
+                }
+            }
+            else -> {
+                cityResponse?.value = InternetNotAvailableException("")
+                fetchCityAPILiveData.postValue(cityResponse)
+            }
         }
         return fetchCityAPILiveData
     }
@@ -121,16 +130,17 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
      *
      * @return LiveData is a data holder class that can be observed within a given lifecycle.
      */
-    fun saveCity(searchAPI: Result): LiveData<Any> {
+    fun saveCity(appDataBase: AppDatabase?, searchAPI: Result): LiveData<Any> {
         saveDBLiveData = MutableLiveData()
         val saveResponse: Response<Any>? = Response()
         if (searchAPI == initModel().search_api?.result?.get(0)) {
             saveResponse?.value = Exception()
             saveDBLiveData.postValue(saveResponse)
+        } else if (appDataBase == null) {
+            saveResponse?.value = Exception()
+            saveDBLiveData.postValue(saveResponse)
         } else {
             scope.launch {
-
-                val appDataBase: AppDatabase = AppDatabase.getInstance(getApplication())
                 val cityEntity = getCityEntity(searchAPI)
                 var cityData: CityEntity? = null
                 try {
@@ -156,7 +166,10 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
      *
      * @return LiveData is a data holder class that can be observed within a given lifecycle.
      */
-    fun getCityWeatherDetail(str: String?): LiveData<Any> {
+    fun getCityWeatherDetail(
+        worldWeatherService: WorldWeatherService?,
+        str: String?
+    ): LiveData<Any> {
         fetchWeatherDetailAPILiveData = MutableLiveData()
         val apiResponse: Response<Any>? = Response()
 
@@ -164,23 +177,30 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
         apiResponse?.value = true
         fetchWeatherDetailAPILiveData.postValue(apiResponse)
 
-        scope.launch {
+        if (worldWeatherService == null) {
+            apiResponse?.value = Exception()
+        } else if (isInternetAvailable(getApplication())) {
+            scope.launch {
 
-            val weatherDetail: retrofit2.Response<CityWeatherDetailModel> =
-                RetrofitAPIRepository.makeRetrofitService().getCityWeatherDetails("$str")
+                val weatherDetail: retrofit2.Response<CityWeatherDetailModel> =
+                    worldWeatherService.getCityWeatherDetails("$str")
 
-            if (weatherDetail.isSuccessful) {
-                Timber.d(weatherDetail.body().toString())
-                val cityModel = weatherDetail.body() as CityWeatherDetailModel
-                if (cityModel.data != null) {
-                    apiResponse?.value = cityModel
+                if (weatherDetail.isSuccessful) {
+                    Timber.d(weatherDetail.body().toString())
+                    val cityModel = weatherDetail.body() as CityWeatherDetailModel
+                    if (cityModel.data != null) {
+                        apiResponse?.value = cityModel
+                    } else {
+                        apiResponse?.value = Exception(weatherDetail.body().toString())
+                    }
                 } else {
-                    apiResponse?.value = Exception(weatherDetail.body().toString())
+                    Timber.e(weatherDetail.errorBody().toString())
+                    apiResponse?.value = Exception(weatherDetail.errorBody().toString())
                 }
-            } else {
-                Timber.e(weatherDetail.errorBody().toString())
-                apiResponse?.value = Exception(weatherDetail.errorBody().toString())
+                fetchWeatherDetailAPILiveData.postValue(apiResponse)
             }
+        } else {
+            apiResponse?.value = InternetNotAvailableException("")
             fetchWeatherDetailAPILiveData.postValue(apiResponse)
         }
         return fetchWeatherDetailAPILiveData

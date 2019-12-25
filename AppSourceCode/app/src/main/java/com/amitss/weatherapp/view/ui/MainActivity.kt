@@ -13,11 +13,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amitss.weatherapp.R
+import com.amitss.weatherapp.database.AppDatabase
 import com.amitss.weatherapp.database.entity.CityEntity
 import com.amitss.weatherapp.service.exception.InternetNotAvailableException
 import com.amitss.weatherapp.service.model.CitySearchModel
 import com.amitss.weatherapp.service.model.Response
 import com.amitss.weatherapp.service.model.Result
+import com.amitss.weatherapp.service.repository.RetrofitAPIRepository
 import com.amitss.weatherapp.view.adapter.CityListAdapter
 import com.amitss.weatherapp.view.adapter.CitySearchAdapter
 import com.amitss.weatherapp.view.callback.IItemClickListener
@@ -132,19 +134,20 @@ class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
     private fun getSavedCityList() {
         Timber.d(getString(R.string.str_saved_city_list))
 
-        weatherAppViewModel.fetchDBCityList().observe(context as MainActivity, Observer {
-            if (it == null || (it as Response<*>).value is Exception) {
-                Timber.d(getString(R.string.str_prev_search_error_title))
-                updateSearchListNotFoundError()
-            } else {
-                Timber.d((it as Response<*>).value.toString())
-                updateSearchListView(false)
-                cityList.clear()
-                cityList.addAll(it.value as ArrayList<CityEntity>)
-                cityListAdapter.setCityValue(cityList)
-                cityListAdapter.notifyDataSetChanged()
-            }
-        })
+        weatherAppViewModel.fetchDBCityList(AppDatabase.getInstance(application))
+            .observe(context as MainActivity, Observer {
+                if (it == null || (it as Response<*>).value is Exception) {
+                    Timber.d(getString(R.string.str_prev_search_error_title))
+                    updateSearchListNotFoundError()
+                } else {
+                    Timber.d((it as Response<*>).value.toString())
+                    updateSearchListView(false)
+                    cityList.clear()
+                    cityList.addAll(it.value as ArrayList<CityEntity>)
+                    cityListAdapter.setCityValue(cityList)
+                    cityListAdapter.notifyDataSetChanged()
+                }
+            })
 
     }
 
@@ -155,25 +158,26 @@ class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
      */
     private fun getAPICityList(city: String) {
         Timber.d(getString(R.string.str_api_city_list))
-        weatherAppViewModel.fetAPICityList(city).observe(context as MainActivity, Observer {
+        weatherAppViewModel.fetAPICityList(RetrofitAPIRepository.makeRetrofitService(), city)
+            .observe(context as MainActivity, Observer {
 
-            citySearchModel = if (it == null || (it as Response<*>).value == null) {
-                Timber.d("null")
-                initModel()
-            } else if (it.value is InternetNotAvailableException) {
-                Timber.d(it.value.toString())
-                handleNoInternet()
-                return@Observer
-            } else if (it.value is Exception) {
-                Timber.d(it.value.toString())
-                initModel()
-            } else {
-                Timber.d(it.value.toString())
-                it.value as CitySearchModel
-            }
-            cityAdapter.setSearchModel(citySearchModel)
-            cityAdapter.notifyDataSetChanged()
-        })
+                citySearchModel = if (it == null || (it as Response<*>).value == null) {
+                    Timber.d("null")
+                    initModel()
+                } else if (it.value is InternetNotAvailableException) {
+                    Timber.d(it.value.toString())
+                    handleNoInternet(context)
+                    return@Observer
+                } else if (it.value is Exception) {
+                    Timber.d(it.value.toString())
+                    initModel()
+                } else {
+                    Timber.d(it.value.toString())
+                    it.value as CitySearchModel
+                }
+                cityAdapter.setSearchModel(citySearchModel)
+                cityAdapter.notifyDataSetChanged()
+            })
 
     }
 
@@ -185,28 +189,16 @@ class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
     private fun savedSelectedCity(searchResult: Result) {
         Timber.d(getString(R.string.str_save_city))
 
-        weatherAppViewModel.saveCity(searchResult).observe(context as MainActivity, Observer {
-            if (it == null || (it as Response<*>).value == null || (it).value is Exception) {
-                return@Observer
-            } else {
-                val response = it
-                val city = response.value as CityEntity
-                openWeatherDetailScreen(city.latitude, city.longitude, city.areaName)
-            }
-        })
-    }
-
-    /**
-     * Handling the No internet.
-     */
-    private fun handleNoInternet() {
-        showAlertDialog(
-            context,
-            getString(R.string.str_no_internet),
-            getString(R.string.str_no_internet_message),
-            getString(R.string.str_ok),
-            R.drawable.ic_error
-        )
+        weatherAppViewModel.saveCity(AppDatabase.getInstance(application), searchResult)
+            .observe(context as MainActivity, Observer {
+                if (it == null || (it as Response<*>).value == null || (it).value is Exception) {
+                    return@Observer
+                } else {
+                    val response = it
+                    val city = response.value as CityEntity
+                    openWeatherDetailScreen(city.latitude, city.longitude, city.areaName)
+                }
+            })
     }
 
     /**
