@@ -19,6 +19,7 @@ ext {
     okhttp3LoggingVer = '4.2.2'
     glideVer = '4.10.0'
     glideKaptVer = '4.9.0'
+    mockitoVer = '2.19.0'
     // core dependency
     coreDependencies = [
             androidCore: "androidx.core:core-ktx:${androidCoreVer}"
@@ -56,7 +57,8 @@ ext {
     testingDependencies = [
             junit           : "junit:junit:${junitVer}",
             androidxJunit   : "androidx.test.ext:junit:${androidxJunitVer}",
-            androidxEspresso: "androidx.test.espresso:espresso-core:${androidxEspressoVer}"
+            androidxEspresso: "androidx.test.espresso:espresso-core:${androidxEspressoVer}",
+            mockito         : "org.mockito:mockito-core:${mockitoVer}"
     ]
 
     //Database Dependencies

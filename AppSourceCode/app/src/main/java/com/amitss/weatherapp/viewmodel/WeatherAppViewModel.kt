@@ -97,7 +97,7 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
                 cityResponse?.value = Exception()
                 fetchCityAPILiveData.postValue(cityResponse)
             }
-            isInternetAvailable(application = getApplication()) -> {
+            isInternetAvailable(application = getApplication())!! -> {
                 scope.launch {
                     val cityList: retrofit2.Response<CitySearchModel>? =
                         worldWeatherService.getWorldWeatherCity("$str%")
@@ -133,7 +133,7 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
     fun saveCity(appDataBase: AppDatabase?, searchAPI: Result): LiveData<Any> {
         saveDBLiveData = MutableLiveData()
         val saveResponse: Response<Any>? = Response()
-        if (searchAPI == initModel().search_api?.result?.get(0)) {
+        if (searchAPI == initModel(application = getApplication())?.search_api?.result?.get(0)) {
             saveResponse?.value = Exception()
             saveDBLiveData.postValue(saveResponse)
         } else if (appDataBase == null) {
@@ -145,7 +145,7 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
                 var cityData: CityEntity? = null
                 try {
                     Timber.d(cityEntity.toString())
-                    appDataBase.cityDao()?.insert(cityEntity)
+                    cityEntity?.let { appDataBase.cityDao()?.insert(it) }
                     cityData = appDataBase.cityDao()?.getLastCity()
                 } catch (ex: SQLiteConstraintException) {
                     Timber.e(ex)
@@ -179,7 +179,7 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
 
         if (worldWeatherService == null) {
             apiResponse?.value = Exception()
-        } else if (isInternetAvailable(getApplication())) {
+        } else if (isInternetAvailable(getApplication())!!) {
             scope.launch {
 
                 val weatherDetail: retrofit2.Response<CityWeatherDetailModel> =

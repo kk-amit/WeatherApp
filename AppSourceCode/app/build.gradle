@@ -26,6 +26,10 @@ android {
             path 'src/main/jni/Android.mk'//path of Android.mk file
         }
     }
+
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -50,6 +54,7 @@ dependencies {
     implementation networkDependencies.glide
     kapt networkDependencies.glideKapt
 
+    testImplementation testingDependencies.mockito
     testImplementation testingDependencies.junit
     androidTestImplementation testingDependencies.androidxJunit
     androidTestImplementation testingDependencies.androidxEspresso

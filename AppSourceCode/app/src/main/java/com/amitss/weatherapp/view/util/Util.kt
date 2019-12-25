@@ -1,5 +1,6 @@
 package com.amitss.weatherapp.view.util
 
+import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -15,12 +16,16 @@ import com.bumptech.glide.request.RequestOptions
 /**
  * Initialise the empty City Model
  */
-fun initModel(): CitySearchModel {
+fun initModel(application: Application?): CitySearchModel? {
+
+    if (application == null) {
+        return null
+    }
     val weatherUrl = WeatherUrl("")
-    val region = Region(WeatherApplication.mInstance.getString(R.string.str_reason_not_found))
+    val region = Region(application.getString(R.string.str_reason_not_found))
     val country =
-        Country(WeatherApplication.mInstance.getString(R.string.str_country_not_found))
-    val areaName = AreaName(WeatherApplication.mInstance.getString(R.string.str_city_na))
+        Country(application.getString(R.string.str_country_not_found))
+    val areaName = AreaName(application.getString(R.string.str_city_na))
 
     val result = Result(
         arrayListOf(areaName), arrayListOf(country),
@@ -34,7 +39,11 @@ fun initModel(): CitySearchModel {
 /**
  * Convert the API result in City Entity
  */
-fun getCityEntity(searchAPI: Result): CityEntity {
+fun getCityEntity(searchAPI: Result?): CityEntity? {
+
+    if (searchAPI == null) {
+        return null
+    }
     return CityEntity(
         searchAPI.areaName?.get(0)?.value,
         searchAPI.country?.get(0)?.value,
@@ -51,7 +60,10 @@ fun getCityEntity(searchAPI: Result): CityEntity {
  * @return true if network is available otherwise false
  */
 @Suppress("DEPRECATION")
-fun isInternetAvailable(application: WeatherApplication): Boolean {
+fun isInternetAvailable(application: WeatherApplication?): Boolean? {
+    if (application == null) {
+        return null
+    }
     var result = false
     val connectivityManager =
         application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
@@ -86,7 +98,12 @@ fun isInternetAvailable(application: WeatherApplication): Boolean {
  * @param imageView - view reference
  * @param imageUrl - URL to load image
  */
-fun loadImage(imageView: ImageView, imageUrl: String?) {
+fun loadImage(imageView: ImageView?, imageUrl: String?): Unit? {
+    if (imageView == null || imageUrl == null) {
+        return null
+    }
     Glide.with(imageView.context).setDefaultRequestOptions(RequestOptions())
         .load(imageUrl).placeholder(R.drawable.ic_cloud).into(imageView)
+
+    return Unit
 }

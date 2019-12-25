@@ -52,7 +52,7 @@ class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
         initView()
 
         // Empty model when Search Data not available
-        citySearchModel = initModel()
+        citySearchModel = initModel(application = application)!!
         cityAdapter = CitySearchAdapter(context, citySearchModel)
 
         // View Model
@@ -173,14 +173,14 @@ class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
 
                 citySearchModel = if (it == null || (it as Response<*>).value == null) {
                     Timber.d("null")
-                    initModel()
+                    initModel(application = application)!!
                 } else if (it.value is InternetNotAvailableException) {
                     Timber.d(it.value.toString())
                     handleNoInternet(context)
                     return@Observer
                 } else if (it.value is Exception) {
                     Timber.d(it.value.toString())
-                    initModel()
+                    initModel(application = application)!!
                 } else {
                     Timber.d(it.value.toString())
                     it.value as CitySearchModel
