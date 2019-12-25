@@ -2,7 +2,7 @@
 
 This repository contains a sample Weather app that implements MVVM architecture using ViewModel, Repositories, Room and LiveData.
 
-<img src="https://github.com/kk-amit/WeatherApp/blob/development/screenshot/app.gif.gif" width="300">
+<img src="https://github.com/kk-amit/WeatherApp/blob/development/screenshot/app.gif">
 
 **The app has following packages:**
 
