@@ -20,6 +20,7 @@
     <string name="str_search">Search</string>
     <string name="str_saved_city_list">Get saved city list</string>
     <string name="str_api_city_list">Get API city list</string>
+    <string name="str_save_city">Save city</string>
     <string name="str_prev_search_error_title">You don\'t have previous search</string>
     <string name="str_prev_search_error_message">Please search the place to see the weather</string>
 

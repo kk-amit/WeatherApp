@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import com.amitss.weatherapp.R
 import com.amitss.weatherapp.WeatherApplication
+import com.amitss.weatherapp.database.entity.CityEntity
 import com.amitss.weatherapp.service.model.*
 
 fun initModel(): CitySearchModel {
@@ -22,6 +23,21 @@ fun initModel(): CitySearchModel {
     )
     val searchAPI = SearchAPI(arrayListOf(result))
     return CitySearchModel(searchAPI)
+}
+
+/**
+ * Convert the API result in City Entity
+ */
+fun getCityEntity(searchAPI: Result): CityEntity {
+    return CityEntity(
+        searchAPI.areaName?.get(0)?.value,
+        searchAPI.country?.get(0)?.value,
+        searchAPI.region?.get(0)?.value,
+        searchAPI.latitude,
+        searchAPI.longitude,
+        searchAPI.population,
+        searchAPI.weatherUrl?.get(0)?.value
+    )
 }
 
 /**

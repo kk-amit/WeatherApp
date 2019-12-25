@@ -10,9 +10,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.amitss.weatherapp.R
+import com.amitss.weatherapp.database.entity.CityEntity
 import com.amitss.weatherapp.service.exception.InternetNotAvailableException
 import com.amitss.weatherapp.service.model.CitySearchModel
 import com.amitss.weatherapp.service.model.Response
+import com.amitss.weatherapp.service.model.Result
 import com.amitss.weatherapp.view.adapter.CitySearchAdapter
 import com.amitss.weatherapp.view.util.QUERY_SIZE
 import com.amitss.weatherapp.view.util.initModel
@@ -78,6 +80,17 @@ class MainActivity : BaseActivity() {
             }
         })
 
+        searchAutoComplete.setOnItemClickListener { parent, view, position, id ->
+            Timber.d("%s %s", getString(R.string.str_on_item_click_listener), position)
+
+            searchView.setQuery("", false)
+            searchView.clearFocus()
+            searchView.isIconified = true
+
+            val selectedCity = citySearchModel.search_api?.result?.get(position)
+            selectedCity?.let { savedSelectedCity(it) }
+        }
+
         return true
     }
 
@@ -135,6 +148,25 @@ class MainActivity : BaseActivity() {
     }
 
     /**
+     * Perform DB operation and save the City in DB
+     *
+     * @param searchResult - Search Result
+     **/
+    private fun savedSelectedCity(searchResult: Result) {
+        Timber.d(getString(R.string.str_save_city))
+
+        weatherAppViewModel.saveCity(searchResult).observe(context as MainActivity, Observer {
+            if (it == null || (it as Response<*>).value == null || (it).value is Exception) {
+                return@Observer
+            } else {
+                val response = it
+                val city = response.value as CityEntity
+                openWeatherDetailScreen(city.latitude, city.longitude, city.areaName)
+            }
+        })
+    }
+
+    /**
      * Handling the No internet.
      */
     private fun handleNoInternet() {
@@ -172,6 +204,10 @@ class MainActivity : BaseActivity() {
         } else {
             View.VISIBLE
         }
+    }
+
+    private fun openWeatherDetailScreen(latitude: Double?, longitude: Double?, areaName: String?) {
+
     }
 
 

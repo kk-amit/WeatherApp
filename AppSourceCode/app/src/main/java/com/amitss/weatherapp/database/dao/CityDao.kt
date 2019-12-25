@@ -14,8 +14,14 @@ interface CityDao {
     /**
      * DB query to fetch last 10 record from City Table.
      */
-    @Query("SELECT * FROM (SELECT * FROM city_table ORDER BY uid DESC LIMIT 10) ORDER BY uid ASC;")
+    @Query("SELECT * FROM (SELECT * FROM city_table ORDER BY uid DESC LIMIT 10) ORDER BY uid ASC")
     fun getAll(): List<CityEntity>?
+
+    /**
+     * DB query to fetch last record from City Table.
+     */
+    @Query("SELECT * FROM city_table ORDER BY uid DESC LIMIT 1")
+    fun getLastCity(): CityEntity?
 
     /**
      * DB insert for City record.
