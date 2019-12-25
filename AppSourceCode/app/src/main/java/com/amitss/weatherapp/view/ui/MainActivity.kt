@@ -9,13 +9,17 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.amitss.weatherapp.R
 import com.amitss.weatherapp.database.entity.CityEntity
 import com.amitss.weatherapp.service.exception.InternetNotAvailableException
 import com.amitss.weatherapp.service.model.CitySearchModel
 import com.amitss.weatherapp.service.model.Response
 import com.amitss.weatherapp.service.model.Result
+import com.amitss.weatherapp.view.adapter.CityListAdapter
 import com.amitss.weatherapp.view.adapter.CitySearchAdapter
+import com.amitss.weatherapp.view.callback.IItemClickListener
 import com.amitss.weatherapp.view.util.QUERY_SIZE
 import com.amitss.weatherapp.view.util.initModel
 import com.amitss.weatherapp.viewmodel.WeatherAppViewModel
@@ -27,18 +31,22 @@ import timber.log.Timber
 /**
  * Home screen activity for application.
  */
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
 
     private lateinit var weatherAppViewModel: WeatherAppViewModel
     private val context: Context = this
     private lateinit var cityAdapter: CitySearchAdapter
     private lateinit var citySearchModel: CitySearchModel
+    private lateinit var cityListAdapter: CityListAdapter
+    private var cityList = ArrayList<CityEntity>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Timber.d(getString(R.string.str_on_create))
         setSupportActionBar(toolbar)
+
+        initView()
 
         // Empty model when Search Data not available
         citySearchModel = initModel()
@@ -48,6 +56,30 @@ class MainActivity : BaseActivity() {
         weatherAppViewModel =
             ViewModelProviders.of(context as FragmentActivity).get(WeatherAppViewModel::class.java)
 
+
+        cityListAdapter = CityListAdapter(context, cityList)
+        cityListAdapter.setListener(this)
+        viewCity.adapter = cityListAdapter
+
+    }
+
+    /**
+     * Initialising the activity view.
+     */
+    private fun initView() {
+        // City List Recycler-view and adapter Setting.
+        val viewCity: RecyclerView = viewCity
+        val linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager.reverseLayout = true
+        linearLayoutManager.stackFromEnd = true
+        viewCity.layoutManager = linearLayoutManager
+        viewCity.setHasFixedSize(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d(getString(R.string.str_on_resume))
+        getSavedCityList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -94,12 +126,6 @@ class MainActivity : BaseActivity() {
         return true
     }
 
-    override fun onResume() {
-        super.onResume()
-        Timber.d(getString(R.string.str_on_resume))
-        getSavedCityList()
-    }
-
     /**
      * Returned list of saved last ten city entry from Database.
      */
@@ -113,6 +139,10 @@ class MainActivity : BaseActivity() {
             } else {
                 Timber.d((it as Response<*>).value.toString())
                 updateSearchListView(false)
+                cityList.clear()
+                cityList.addAll(it.value as ArrayList<CityEntity>)
+                cityListAdapter.setCityValue(cityList)
+                cityListAdapter.notifyDataSetChanged()
             }
         })
 
@@ -206,8 +236,19 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun openWeatherDetailScreen(latitude: Double?, longitude: Double?, areaName: String?) {
+    override fun onItemClick(item: CityEntity) {
+        Timber.d(item.toString())
+        // Start another activity for selected position
+        openWeatherDetailScreen(item.latitude, item.longitude, item.areaName)
+    }
 
+    /**
+     *  Open the Weather Detail Screen
+     */
+    private fun openWeatherDetailScreen(latitude: Double?, longitude: Double?, areaName: String?) {
+        Timber.d(latitude.toString())
+        Timber.d(latitude.toString())
+        Timber.d(areaName)
     }
 
 
