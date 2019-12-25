@@ -28,6 +28,7 @@
     <string name="str_country_not_found">Please try with different name</string>
     <string name="str_city_na">City Not Found</string>
 
+    <string name="str_weather_detail">Weather Detail</string>
     <string name="str_no_internet">No Internet</string>
     <string name="str_no_internet_message">Network not available. Please try again later</string>
     <string name="str_ok">OK</string>

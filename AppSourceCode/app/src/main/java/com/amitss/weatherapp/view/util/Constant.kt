@@ -42,3 +42,9 @@ const val HTTP_WRITE_TIMEOUT: Long = 90
  * Min Query length
  */
 const val QUERY_SIZE = 2
+/**
+ * Intent constant to pass value using Bundle
+ */
+const val LATITUDE: String = "LATITUDE"
+const val LONGITUDE: String = "LONGITUDE"
+const val CITY: String = "CITY"

@@ -30,6 +30,11 @@
             android:name=".view.ui.MainActivity"
             android:label="@string/str_app_name"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".view.ui.WeatherDetailActivity"
+            android:label="@string/str_weather_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

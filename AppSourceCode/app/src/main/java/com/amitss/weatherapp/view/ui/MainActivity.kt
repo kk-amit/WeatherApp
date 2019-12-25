@@ -1,6 +1,7 @@
 package com.amitss.weatherapp.view.ui
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -20,8 +21,7 @@ import com.amitss.weatherapp.service.model.Result
 import com.amitss.weatherapp.view.adapter.CityListAdapter
 import com.amitss.weatherapp.view.adapter.CitySearchAdapter
 import com.amitss.weatherapp.view.callback.IItemClickListener
-import com.amitss.weatherapp.view.util.QUERY_SIZE
-import com.amitss.weatherapp.view.util.initModel
+import com.amitss.weatherapp.view.util.*
 import com.amitss.weatherapp.viewmodel.WeatherAppViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -249,7 +249,11 @@ class MainActivity : BaseActivity(), IItemClickListener<CityEntity> {
         Timber.d(latitude.toString())
         Timber.d(latitude.toString())
         Timber.d(areaName)
+
+        val intent = Intent(context, WeatherDetailActivity::class.java)
+        intent.putExtra(LATITUDE, latitude)
+        intent.putExtra(LONGITUDE, longitude)
+        intent.putExtra(CITY, areaName)
+        startActivity(intent)
     }
-
-
 }
