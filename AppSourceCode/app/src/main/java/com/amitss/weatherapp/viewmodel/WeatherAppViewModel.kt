@@ -130,13 +130,16 @@ class WeatherAppViewModel(application: Application) : AndroidViewModel(applicati
      *
      * @return LiveData is a data holder class that can be observed within a given lifecycle.
      */
-    fun saveCity(appDataBase: AppDatabase?, searchAPI: Result): LiveData<Any> {
+    fun saveCity(appDataBase: AppDatabase?, searchAPI: Result?): LiveData<Any> {
         saveDBLiveData = MutableLiveData()
         val saveResponse: Response<Any>? = Response()
-        if (searchAPI == initModel(application = getApplication())?.search_api?.result?.get(0)) {
+        if (searchAPI == null) {
             saveResponse?.value = Exception()
             saveDBLiveData.postValue(saveResponse)
         } else if (appDataBase == null) {
+            saveResponse?.value = Exception()
+            saveDBLiveData.postValue(saveResponse)
+        } else if (searchAPI == initModel(application = getApplication())?.search_api?.result?.get(0)) {
             saveResponse?.value = Exception()
             saveDBLiveData.postValue(saveResponse)
         } else {

@@ -20,6 +20,8 @@ ext {
     glideVer = '4.10.0'
     glideKaptVer = '4.9.0'
     mockitoVer = '2.19.0'
+    androidArchCoreVer = '1.1.1'
+    mockitoCoreVer = '2.13.0'
     // core dependency
     coreDependencies = [
             androidCore: "androidx.core:core-ktx:${androidCoreVer}"
@@ -58,7 +60,9 @@ ext {
             junit           : "junit:junit:${junitVer}",
             androidxJunit   : "androidx.test.ext:junit:${androidxJunitVer}",
             androidxEspresso: "androidx.test.espresso:espresso-core:${androidxEspressoVer}",
-            mockito         : "org.mockito:mockito-core:${mockitoVer}"
+            mockito         : "org.mockito:mockito-core:${mockitoVer}",
+            androidArchCore : "android.arch.core:core-testing:${androidArchCoreVer}",
+            mockitoCore     : "org.mockito:mockito-inline:${mockitoCoreVer}"
     ]
 
     //Database Dependencies
