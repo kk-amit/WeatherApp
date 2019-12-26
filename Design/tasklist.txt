@@ -1,0 +1,35 @@
+Task 1 - Setup the repository and Android project 
+
+Task 2 - Setup the product design flow
+
+Task 3 - Create the Splash screen (Render on mobile device for 3 second and then move to Home screen)
+
+Task 4 - Create the Home screen	
+	
+	Task 4. a - UI design
+	
+	Task 4. b - Error Handling 
+		Task 4. b.i  - No Internet available
+		Task 4. b.ii - Home screen saved record not available
+		
+	Task 4. c - View Model and Model desgining and implementation
+	
+	Task 4. d - JNI integration to save the API key ( Weather API Key)
+	
+	Task 4. e - Search City API integration
+				Task 4. e.i- Retrofit and Moshi Setup
+				Task 4. e.ii - Error handling when City/record not found 
+	
+	Task 4. f - Room integration to save the City and fetch and view last 10 record. 
+				Task 4. f.i - Error Handling avoid duplicate City entry
+				
+	Task 4. g - Unit testing 
+				
+Task 5 - Create Weather Detail Screen
+	
+	Task 5. a - UI design
+	
+	Task 5. b - City Weather Detail API Integration	
+		Task 5. b .i - Error Handling
+	
+		
